@@ -149,38 +149,3 @@ export const deleteStaff = async (req, res, next) => {
     next(error);
   }
 };
-
-export const updateCustomer = async (req, res, next) => {
-  try {
-    const updatedCustomer = await Customer.findByIdAndUpdate(
-      req.params.CustomerId,
-      { $set: { ...req.body } }, // Use spread operator to update all fields
-      { new: true }
-    );
-
-    // Check if staff was found
-    if (!updatedCustomer) {
-      return next(errorHandler(404, "العميل غير موجود"));
-    }
-
-    // Omit password from response
-    res.status(200).json("معلومات العميل عدلت بنجاح");
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const deleteCustomer = async (req, res, next) => {
-  try {
-    const deletedCustomer = await Customer.findByIdAndDelete(
-      req.params.CustomerId
-    );
-    if (!deletedCustomer) {
-      return next(errorHandler(404, "Customer not found"));
-    }
-    res.status(200).json({ message: "Customer has been deleted" });
-  } catch (error) {
-    console.error("Error deleting customer:", error); // Log error for debugging
-    next(error);
-  }
-};

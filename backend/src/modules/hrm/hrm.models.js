@@ -11,11 +11,9 @@ const staffSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    address: { type: String, required: true },
+    contact: { type: String, required: true },
     passwordStaff: {
-      type: String,
-      required: true,
-    },
-    numberStaff:{
       type: String,
       required: true,
     },

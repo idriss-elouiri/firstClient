@@ -27,11 +27,20 @@ export const distribution = async (req, res) => {
 
 export const unpaidClients = async (req, res) => {
   try {
+    // Fetch unpaid orders and populate the source (Supplier) and destination (Customer) fields
     const unpaidClients = await Order.find({
       paymentStatus: "unpaid",
-    }).populate("orders");
+    })
+      .populate("source") // Populate Supplier model
+      .populate("destination"); // Populate Customer model
+
+    if (!unpaidClients || unpaidClients.length === 0) {
+      return res.status(404).json({ message: "No unpaid clients found." });
+    }
+
     res.status(200).json(unpaidClients);
   } catch (error) {
+    console.error("Error fetching unpaid clients:", error); // Log the full error for debugging
     res.status(500).json({ message: "Error fetching unpaid clients", error });
   }
 };

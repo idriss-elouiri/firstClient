@@ -9,15 +9,21 @@ export const registerStaffHandler = async (req, res, next) => {
   const {
     profilePictureStaff,
     nameStaff,
+    address,
+    contact,
     passwordStaff,
     numberStaff,
-    isStaff,
   } = req.body;
 
   try {
     // Validate input fields before proceeding
-    if (!nameStaff || !passwordStaff) {
-      return next(errorHandler(400, "Name, email, and password are required."));
+    if (!nameStaff || !passwordStaff || !address || !contact) {
+      return next(
+        errorHandler(
+          400,
+          "Name, email, adress, contact and password are required."
+        )
+      );
     }
 
     // Hash the password
@@ -26,9 +32,11 @@ export const registerStaffHandler = async (req, res, next) => {
     const newStaff = new Staff({
       profilePictureStaff,
       nameStaff,
+      address,
+      contact,
       passwordStaff: hashedPassword,
       numberStaff,
-      isStaff,
+      isStaff: true,
     });
 
     await newStaff.save();

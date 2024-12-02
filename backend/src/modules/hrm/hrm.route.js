@@ -11,12 +11,15 @@ router.post(
   validateZod(registerStaffShcema),
   hrmController.registerStaffHandler
 );
-router.post("/loginStaff", validateZod(loginStaffShcema), hrmController.loginStaffHandler);
-router.put('/updateStaff/:staffId', verifyToken, hrmController.updateStaff);
-router.delete('/deleteStaff/:staffId', verifyToken, hrmController.deleteStaff);
-router.post('/signoutStaff', hrmController.signoutStaff);
-router.get('/getStaffs', verifyToken, hrmController.getStaffs);
-router.get('/:staffId', hrmController.getStaff);
-router.put('/staffUpdateCustomer/:CustomerId', hrmController.updateCustomer);
-router.delete('/staffDeleteCustomer/:CustomerId', hrmController.deleteCustomer);
+router.post(
+  "/loginStaff",
+  validateZod(loginStaffShcema),
+  hrmController.loginStaffHandler
+);
+router.put("/updateStaff/:staffId", verifyToken, hrmController.updateStaff);
+router.delete("/deleteStaff/:staffId", verifyToken, hrmController.deleteStaff);
+router.post("/signoutStaff", hrmController.signoutStaff);
+router.get("/getStaffs", verifyToken, hrmController.getStaffs);
+router.get("/:staffId", hrmController.getStaff);
+
 export default router;
