@@ -75,7 +75,10 @@ export const loginStaffHandler = async (req, res, next) => {
 
     res
       .status(200)
-      .cookie("access_token", token, { httpOnly: true, secure: false }) // Set secure to true in production
+      .cookie("access_token", token, { 
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production', 
+          sameSite: 'None' }) // Set secure to true in production
       .json(rest);
   } catch (error) {
     next(error);
