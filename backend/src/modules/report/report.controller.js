@@ -1,11 +1,10 @@
-import Distribution from "../distribution/distribution.model.js";
 import Order from "../orders/order.models.js";
 import OrderSupplier from "../ordersSupplier/orderSupplier.models.js";
 
 export const distribution = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const report = await Distribution.aggregate([
+    const report = await OrderSupplier.aggregate([
       {
         $match: {
           date: { $gte: new Date(startDate), $lte: new Date(endDate) },
@@ -15,21 +14,22 @@ export const distribution = async (req, res) => {
         $group: {
           _id: null,
           totalQuantity: { $sum: "$quantity" },
-          totalCost: { $sum: "$cost" },
+          totalCost: { $sum: "$totalCost" }, // استخدم totalCost بدلاً من cost
         },
       },
     ]);
-    res.status(200).json(report);
+    res.status(200).json(report[0] || { totalQuantity: 0, totalCost: 0 }); // التعامل مع الحالة الفارغة
   } catch (error) {
     res.status(500).json({ message: "Error generating report", error });
   }
 };
 
+
 export const unpaidClients = async (req, res) => {
   try {
     // Fetch unpaid orders and populate the source (Supplier) and destination (Customer) fields
     const unpaidClients = await Order.find({
-      paymentStatus: "unpaid",
+      paymentStatus: "غير مدفوع",
     })
       .populate("source") // Populate Supplier model
       .populate("destination"); // Populate Customer model

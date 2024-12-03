@@ -4,7 +4,7 @@ import * as reportController from "./report.controller.js";
 const router = express.Router();
 
 // Add a new distribution
-router.post("/distribution", reportController.distribution);
+router.get("/distribution", reportController.distribution);
 
 // Get all distributions
 router.get("/unpaid-clients", reportController.unpaidClients);

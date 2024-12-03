@@ -21,10 +21,14 @@ const orderSchema = new mongoose.Schema(
     operationalCost: { type: Number, default: 0 }, // تكلفة التشغيل
     status: {
       type: String,
-      enum: ["pending", "delivered", "canceled"],
+      enum: ["قيد الانتظار", "تم التوصيل", "تم الإلغاء"],
       required: true,
     },
-    paymentStatus: { type: String, enum: ["paid", "unpaid"], required: true },
+    paymentStatus: {
+      type: String,
+      enum: ["مدفوع", "غير مدفوع"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

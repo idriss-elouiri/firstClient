@@ -40,8 +40,8 @@ export const createOrderSupplier = async (req, res, next) => {
     laborCost: laborCostParsed,
     maintenanceCost: maintenanceCostParsed,
     operationalCost: operationalCostParsed,
-    status: "pending",
-    paymentStatus: "unpaid",
+    status: "قيد الانتظار",
+    paymentStatus: "غير مدفوع",
   });
 
   try {

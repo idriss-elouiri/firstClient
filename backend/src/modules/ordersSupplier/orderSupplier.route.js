@@ -6,7 +6,7 @@ const router = express.Router();
 router.post('/create', orderController.createOrderSupplier)
 router.get('/getOrders', orderController.getOrders)
 router.delete('/delete/:orderId', orderController.deleteOrder)
-router.delete('/update/:orderId', orderController.updateOrder)
+router.put('/update/:orderId', orderController.updateOrder)
 router.get('/:orderId', orderController.getOrder);
 
 

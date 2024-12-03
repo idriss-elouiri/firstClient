@@ -10,7 +10,6 @@ import orderRouter from "./modules/orders/order.route.js";
 import ordersSupplierRouter from "./modules/ordersSupplier/orderSupplier.route.js";
 import stockRouter from "./modules/stock/stock.route.js";
 import supplierRouter from "./modules/supplier/Supplier.route.js";
-import distributionRouter from "./modules/distribution/distribution.route.js";
 import reportRouter from "./modules/report/report.route.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
@@ -40,10 +39,9 @@ app.use("/api/ordersSupplier", ordersSupplierRouter);
 app.use("/api/stock", stockRouter);
 app.use("/api/suppliers", supplierRouter);
 app.use("/api/expenses", expenseRouter);
-app.use("/api/distributions", distributionRouter);
 app.use("/api/report", reportRouter);
 
-app.get("/*", (req, res) => {
+app.get("/*", (req, res) => {   
   res.json("hello world");
 });
 

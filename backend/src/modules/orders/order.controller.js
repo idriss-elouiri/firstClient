@@ -55,8 +55,8 @@ export const createOrder = async (req, res, next) => {
     transportationCost,
     laborCost,
     operationalCost,
-    status: "pending",
-    paymentStatus: "unpaid",
+    status: "قيد الانتظار",
+    paymentStatus: "غير مدفوع",
   });
 
   try {
@@ -114,7 +114,9 @@ export const updateOrder = async (req, res, next) => {
 // Handler for getting a specific order by ID
 export const getOrder = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.orderId); // Ensure you are using the correct parameter key
+    const order = await Order.findById(req.params.orderId)
+      .populate("source", "name")
+      .populate("destination", "name"); // Ensure you are using the correct parameter key
 
     if (!order) {
       return next(errorHandler(404, "Order not found")); // Call errorHandler if order is not found
