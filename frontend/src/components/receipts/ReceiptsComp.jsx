@@ -79,7 +79,7 @@ const ReceiptComp = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [apiUrl]);
   const fetchOrders = async () => {
     setLoading(true);
     try {

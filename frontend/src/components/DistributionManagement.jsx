@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
 const DistributionManagement = () => {
@@ -11,11 +11,7 @@ const DistributionManagement = () => {
   const itemsPerPage = 10; // عدد الطلبات في كل صفحة
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await axios.get(`${apiUrl}/api/orders/getOrders`);
@@ -25,7 +21,11 @@ const DistributionManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [apiUrl]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   // Filtering logic
   const filteredOrders = orders.filter((order) => {

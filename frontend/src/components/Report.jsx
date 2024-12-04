@@ -9,9 +9,7 @@ const CostAndProfitReport = () => {
 
   const fetchCostAndProfitReport = async () => {
     try {
-      const response = await axios.get(
-        `${apiUrl}/api/report/getReports`
-      ); // Adjust API endpoint
+      const response = await axios.get(`${apiUrl}/api/report/getReports`); // Adjust API endpoint
       return response.data;
     } catch (error) {
       console.error("Error fetching cost and profit report:", error);
@@ -32,7 +30,7 @@ const CostAndProfitReport = () => {
     };
 
     getReportData();
-  }, []);
+  }, [apiUrl]);
 
   if (loading)
     return <div className="text-center text-gray-500">جاري التحميل...</div>;

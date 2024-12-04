@@ -20,29 +20,28 @@ const Suppliers = () => {
   ];
 
   useEffect(() => {
-    fetchSuppliers();
-  }, []);
+    const fetchSuppliers = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`${apiUrl}/api/suppliers/getSuppliers`);
+        const data = await res.json();
 
-  const fetchSuppliers = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`${apiUrl}/api/suppliers/getSuppliers`);
-      const data = await res.json();
-
-      if (data.success === false) {
-        setError(data.message);
+        if (data.success === false) {
+          setError(data.message);
+          setLoading(false);
+          return;
+        }
+        console.log(data);
+        setSuppliers(data.suppliers);
+        setError(null);
+      } catch (err) {
+        setError("فشل في جلب الموردين. يرجى المحاولة مرة أخرى لاحقًا.");
+      } finally {
         setLoading(false);
-        return;
       }
-      console.log(data);
-      setSuppliers(data.suppliers);
-      setError(null);
-    } catch (err) {
-      setError("فشل في جلب الموردين. يرجى المحاولة مرة أخرى لاحقًا.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    fetchSuppliers();
+  }, [apiUrl]);
 
   const handleAdd = () => {
     setEditData(null);
@@ -76,7 +75,6 @@ const Suppliers = () => {
       setError("فشل في حفظ المورد. يرجى المحاولة مرة أخرى.");
     }
   };
-
 
   return (
     <div className="p-6 space-y-6">

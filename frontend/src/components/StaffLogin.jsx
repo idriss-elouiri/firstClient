@@ -8,7 +8,7 @@ import {
   signInStart,
   signInSuccess,
   signInFailure,
-} from "../../redux/user/userSlice";
+} from "../../src/redux/user/userSlice";
 
 export default function StaffLoginComp() {
   const [formData, setFormData] = useState({

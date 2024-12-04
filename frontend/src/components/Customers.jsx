@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import FormModal from "./FormModal";
 
@@ -9,6 +9,7 @@ const Customers = () => {
   const [editData, setEditData] = useState(null);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const customerFields = [
     { name: "name", label: "الاسم" },
@@ -16,32 +17,28 @@ const Customers = () => {
     { name: "contact", label: "التواصل" },
   ];
 
-  useEffect(() => {
-    fetchCustomers();
-    fetchSuppliers();
-  }, []);
-
-  const fetchCustomers = async () => {
+  const fetchSuppliers = useCallback(async () => {
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/customers/getCustomers"
-      );
-      const data = await res.json();
-      setCustomers(data.customers || []);
-    } catch (error) {
-      console.error("Error fetching customers:", error);
-    }
-  };
-
-  const fetchSuppliers = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/suppliers");
-      const data = await res.json();
+      const { data } = await axios.get(`${apiUrl}/api/suppliers/getSuppliers`);
       setSuppliers(data.suppliers || []);
-    } catch (error) {
-      console.error("Error fetching suppliers:", error);
+    } catch {
+      setError("فشل في جلب الموردين.");
     }
-  };
+  }, [apiUrl]);
+
+  const fetchCustomers = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`${apiUrl}/api/customers/getCustomers`);
+      setCustomers(data.customers || []);
+    } catch {
+      setError("فشل في جلب العملاء.");
+    }
+  }, [apiUrl]);
+
+  useEffect(() => {
+    fetchSuppliers();
+    fetchCustomers();
+  }, [fetchSuppliers, fetchCustomers]);
 
   const handleAdd = () => {
     setEditData(null);
@@ -54,21 +51,15 @@ const Customers = () => {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:5000/api/customers/delete/${id}`);
+    await axios.delete(`${apiUrl}/api/customers/delete/${id}`);
     fetchCustomers();
   };
 
   const handleSubmit = async (data) => {
     if (editData) {
-      await axios.put(
-        `http://localhost:5000/api/customers/update/${editData._id}`,
-        data
-      );
+      await axios.put(`${apiUrl}/api/customers/update/${editData._id}`, data);
     } else {
-      await axios.post(
-        "http://localhost:5000/api/customers/registerCustomer",
-        data
-      );
+      await axios.post(`${apiUrl}/api/customers/registerCustomer`, data);
     }
     fetchCustomers();
     setIsModalOpen(false);

@@ -16,20 +16,21 @@ const Staffs = () => {
   ];
 
   useEffect(() => {
+    const fetchStaffs = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/api/hrm/getStaffs`, {
+          method: "GET",
+          credentials: "include",
+        });
+        const data = await res.json();
+        setStaffs(data.staffs || []);
+      } catch (error) {
+        console.error("Error fetching staffs:", error);
+      }
+    };
     fetchStaffs();
-  }, []);
-  const fetchStaffs = async () => {
-    try {
-      const res = await fetch(`${apiUrl}/api/hrm/getStaffs`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await res.json();
-      setStaffs(data.staffs || []);
-    } catch (error) {
-      console.error("Error fetching staffs:", error);
-    }
-  };
+  }, [apiUrl]);
+
   const handleAdd = () => {
     setEditData(null);
     setIsModalOpen(true);

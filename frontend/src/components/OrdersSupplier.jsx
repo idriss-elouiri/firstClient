@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import FormModal from "./FormModal";
 
@@ -57,38 +57,33 @@ const OrdersSupplier = () => {
     },
   ];
 
+  const fetchOrders = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(
+        `${apiUrl}/api/ordersSupplier/getOrders`
+      );
+      setOrdersSupplier(data.ordersSupplier || []);
+    } catch (err) {
+      setError("فشل في جلب البيانات.");
+    } finally {
+      setLoading(false);
+    }
+  }, [apiUrl]);
+
+  const fetchSuppliers = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`${apiUrl}/api/suppliers/getSuppliers`);
+      setSuppliers(data.suppliers || []);
+    } catch {
+      setError("فشل في جلب الموردين.");
+    }
+  }, [apiUrl]);
+
   useEffect(() => {
     fetchOrders();
     fetchSuppliers();
-  }, []);
-
-  const fetchOrders = async () => {
-    try {
-      const response = await fetch(
-        `${apiUrl}/api/ordersSupplier/getOrders`
-      );
-      const data = await response.json();
-      if (data.ordersSupplier && Array.isArray(data.ordersSupplier)) {
-        setOrdersSupplier(data.ordersSupplier);
-      } else {
-        setError("البيانات غير صالحة");
-      }
-    } catch (error) {
-      console.error("خطأ في جلب البيانات:", error);
-      setError("فشل في جلب البيانات");
-    }
-  };
-
-  const fetchSuppliers = async () => {
-    try {
-      const res = await fetch(`${apiUrl}/api/suppliers/getSuppliers`);
-      const data = await res.json();
-      setSuppliers(data.suppliers || []);
-    } catch (error) {
-      console.error("خطأ في جلب الموردين:", error);
-      setError("فشل في جلب الموردين");
-    }
-  };
+  }, [fetchOrders, fetchSuppliers]);
 
   const handleAdd = () => {
     setEditData(null);

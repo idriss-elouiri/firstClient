@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import FormModal from "./FormModal";
 
@@ -65,13 +65,7 @@ const Orders = () => {
     },
   ];
 
-  useEffect(() => {
-    fetchOrders();
-    fetchSuppliers();
-    fetchCustomers();
-  }, []);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await axios.get(`${apiUrl}/api/orders/getOrders`);
@@ -81,25 +75,31 @@ const Orders = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [apiUrl]);
 
-  const fetchSuppliers = async () => {
+  const fetchSuppliers = useCallback(async () => {
     try {
       const { data } = await axios.get(`${apiUrl}/api/suppliers/getSuppliers`);
       setSuppliers(data.suppliers || []);
     } catch {
       setError("فشل في جلب الموردين.");
     }
-  };
+  }, [apiUrl]);
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = useCallback(async () => {
     try {
       const { data } = await axios.get(`${apiUrl}/api/customers/getCustomers`);
       setCustomers(data.customers || []);
     } catch {
       setError("فشل في جلب العملاء.");
     }
-  };
+  }, [apiUrl]);
+
+  useEffect(() => {
+    fetchOrders();
+    fetchSuppliers();
+    fetchCustomers();
+  }, [fetchOrders, fetchSuppliers, fetchCustomers]);
 
   const handleAdd = () => {
     setEditData(null);

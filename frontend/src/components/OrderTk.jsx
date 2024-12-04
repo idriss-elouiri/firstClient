@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 const OrdersTk = () => {
   const [orders, setOrders] = useState([]);
@@ -11,25 +11,21 @@ const OrdersTk = () => {
   const [currentPage, setCurrentPage] = useState(1); // الصفحة الحالية
   const itemsPerPage = 10; // عدد الطلبات في كل صفحة
 
+  const fetchOrders = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`${apiUrl}/api/orders/getOrders`);
+      setOrders(data.orders || []);
+    } catch (err) {
+      setError("فشل في جلب البيانات.");
+    } finally {
+      setLoading(false);
+    }
+  }, [apiUrl]);
+
   useEffect(() => {
     fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/orders/getOrders`);
-      const data = await response.json();
-      if (data.orders && Array.isArray(data.orders)) {
-        setOrders(data.orders);
-      } else {
-        setError("البيانات غير صالحة");
-      }
-    } catch (error) {
-      console.error("خطأ في جلب البيانات:", error);
-      setError("فشل في جلب البيانات");
-    }
-  };
-
+  }, [fetchOrders]);
   // تصفية الطلبات بناءً على الفلتر الحالي
   const filteredOrders = orders.filter((order) => {
     const statusMatches =

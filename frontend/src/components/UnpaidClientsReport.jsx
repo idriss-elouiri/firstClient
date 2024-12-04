@@ -24,31 +24,30 @@ const UnpaidClientsReport = () => {
   const itemsPerPage = 10; // Items per page
 
   useEffect(() => {
+    const fetchUnpaidClients = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(`${apiUrl}/api/report/unpaid-clients`);
+        // Formatting the data for the table
+        const formattedClients = response.data.map((item) => {
+          const source = item.source || {};
+          return {
+            _id: item._id,
+            name: source.name || "غير معروف",
+            totalCost: item.totalCost || 0,
+            contact: source.contact || "غير متوفر",
+          };
+        });
+        setClients(formattedClients);
+      } catch (err) {
+        setError("حدث خطأ أثناء جلب البيانات. حاول مرة أخرى لاحقًا.");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchUnpaidClients();
-  }, []);
-
-  const fetchUnpaidClients = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(`${apiUrl}/api/report/unpaid-clients`);
-      // Formatting the data for the table
-      const formattedClients = response.data.map((item) => {
-        const source = item.source || {};
-        return {
-          _id: item._id,
-          name: source.name || "غير معروف",
-          totalCost: item.totalCost || 0,
-          contact: source.contact || "غير متوفر",
-        };
-      });
-      setClients(formattedClients);
-    } catch (err) {
-      setError("حدث خطأ أثناء جلب البيانات. حاول مرة أخرى لاحقًا.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [apiUrl]);
 
   // Data pagination
   const indexOfLastItem = currentPage * itemsPerPage;

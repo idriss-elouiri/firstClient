@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import FormModal from "./FormModal";
 
@@ -28,12 +28,8 @@ const Stock = () => {
   ];
 
   // تحميل البيانات
-  useEffect(() => {
-    fetchStock();
-    fetchSuppliers();
-  }, []);
 
-  const fetchStock = async () => {
+  const fetchStock = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`${apiUrl}/api/stock/current-stock`);
@@ -51,9 +47,9 @@ const Stock = () => {
     } catch (error) {
       console.error("حدث خطأ أثناء جلب المخزون:", error);
     }
-  };
+  }, [apiUrl]);
 
-  const fetchSuppliers = async () => {
+  const fetchSuppliers = useCallback(async () => {
     try {
       const res = await fetch(`${apiUrl}/api/suppliers/getSuppliers`);
       const data = await res.json();
@@ -69,7 +65,12 @@ const Stock = () => {
     } catch (error) {
       console.error("حدث خطأ أثناء جلب الموردين:", error);
     }
-  };
+  }, [apiUrl]);
+
+  useEffect(() => {
+    fetchStock();
+    fetchSuppliers();
+  }, [fetchStock, fetchSuppliers]);
 
   // إضافة أو تعديل المخزون
   const handleAdd = () => {
