@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import FormModal from "./FormModal";
 
-const Orders = () => {
+const OrdersCustomer = () => {
   const [orders, setOrders] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -111,22 +111,24 @@ const Orders = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (order) => {
     try {
-      await axios.delete(`http://localhost:5000/api/orders/delete/${id}`);
-      fetchOrders();
-    } catch {
-      setError("فشل في حذف الطلب.");
+      await axios.delete(`${apiUrl}/api/orders/delete/${order._id}`, {
+        params: {
+          farm: order.source?.name,
+          quantity: order.quantity, // Corrected spelling
+        },
+      });
+      fetchOrders(); // Refresh the orders after deletion
+    } catch (error) {
+      setError("فشل في حذف الطلب."); // Display error message
     }
   };
 
   const handleSubmit = async (data) => {
     try {
       if (editData) {
-        await axios.put(
-          `http://localhost:5000/api/orders/update/${editData._id}`,
-          data
-        );
+        await axios.put(`${apiUrl}/api/orders/update/${editData._id}`, data);
       } else {
         await axios.post("http://localhost:5000/api/orders/create", data);
       }
@@ -231,7 +233,7 @@ const Orders = () => {
                   تعديل
                 </button>
                 <button
-                  onClick={() => handleDelete(order._id)}
+                  onClick={() => handleDelete(order)}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
                   حذف
@@ -283,4 +285,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default OrdersCustomer;

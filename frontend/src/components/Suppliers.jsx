@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import FormModal from "./FormModal";
 
@@ -19,29 +19,30 @@ const Suppliers = () => {
     { name: "email", label: "البريد الإلكتروني" },
   ];
 
-  useEffect(() => {
-    const fetchSuppliers = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`${apiUrl}/api/suppliers/getSuppliers`);
-        const data = await res.json();
+  const fetchSuppliers = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${apiUrl}/api/suppliers/getSuppliers`);
+      const data = await res.json();
 
-        if (data.success === false) {
-          setError(data.message);
-          setLoading(false);
-          return;
-        }
-        console.log(data);
-        setSuppliers(data.suppliers);
-        setError(null);
-      } catch (err) {
-        setError("فشل في جلب الموردين. يرجى المحاولة مرة أخرى لاحقًا.");
-      } finally {
+      if (data.success === false) {
+        setError(data.message);
         setLoading(false);
+        return;
       }
-    };
-    fetchSuppliers();
+      console.log(data);
+      setSuppliers(data.suppliers);
+      setError(null);
+    } catch (err) {
+      setError("فشل في جلب الموردين. يرجى المحاولة مرة أخرى لاحقًا.");
+    } finally {
+      setLoading(false);
+    }
   }, [apiUrl]);
+
+  useEffect(() => {
+    fetchSuppliers();
+  }, [fetchSuppliers]);
 
   const handleAdd = () => {
     setEditData(null);

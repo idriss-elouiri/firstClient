@@ -8,7 +8,6 @@ const Stock = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   // الحقول الخاصة بمخطط المخزون

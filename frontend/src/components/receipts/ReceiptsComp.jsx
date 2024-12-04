@@ -55,7 +55,7 @@ const OrdersTable = ({ orders }) => {
               {order.paymentStatus}
             </td>
             <td>
-              <Link href={`/receipts/جنيه{order._id}/print`}>
+              <Link href={`/receipts/${order._id}/print`}>
                 <button className="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300">
                   طباعة التوصيل
                 </button>

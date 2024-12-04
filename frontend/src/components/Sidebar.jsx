@@ -90,13 +90,13 @@ const Sidebar = ({ showNav, onClose }) => {
                   href="/orderSupplierPage"
                   className="block p-2 rounded hover:bg-indigo-700"
                 >
-                  تتبع الطلبات من المزارع
+                  انشاء الطلبات من المزارع
                 </Link>
                 <Link
-                  href="/orderSuppliertkPage"
+                  href="/SupplierCostsPage"
                   className="block p-2 rounded hover:bg-indigo-700"
                 >
-                  تتبع التكاليف الاخري
+                  تتبع التكاليف الاخري للمزرعة
                 </Link>
                 <Link
                   href="/stockPage"
@@ -131,16 +131,16 @@ const Sidebar = ({ showNav, onClose }) => {
                   تسجيل بيانات المحلات
                 </Link>
                 <Link
-                  href="/orderPage"
+                  href="/orderCustomerPage"
                   className="block p-2 rounded hover:bg-indigo-700"
                 >
                   إنشاء طلبات توزيع الدجاج
                 </Link>
                 <Link
-                  href="/ordertkPage"
+                  href="/CustomerCostsPage"
                   className="block p-2 rounded hover:bg-indigo-700"
                 >
-                  تتبع التكاليف الاخري
+                  تتبع التكاليف الاخري للدجاج
                 </Link>
                 <Link
                   href="/DistributionManagementPage"
@@ -153,7 +153,6 @@ const Sidebar = ({ showNav, onClose }) => {
           </div>
         )}
 
-
         {/* Printing Section */}
         <Link
           href="/receipts"
@@ -162,7 +161,6 @@ const Sidebar = ({ showNav, onClose }) => {
           <FaReceipt className="mr-2" />
           قسم الطباعة
         </Link>
-
       </nav>
     </aside>
   );

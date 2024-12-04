@@ -1,13 +1,13 @@
 "use client";
 
 import Layout from "@/components/Layout";
-import Orders from "@/components/Orders";
+import SupplierCosts from "@/components/SupplierCosts";
 import React from "react";
 
-export default function OrderPage() {
+export default function SupplierCostsPage() {
   return (
     <Layout>
-      <Orders />
+      <SupplierCosts />
     </Layout>
   );
 }

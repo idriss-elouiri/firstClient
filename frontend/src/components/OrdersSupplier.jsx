@@ -112,7 +112,7 @@ const OrdersSupplier = () => {
           data
         );
       } else {
-        await axios.post(`${API_BASE_URL}/api/ordersSupplier/create`, data);
+        await axios.post(`${apiUrl}/api/ordersSupplier/create`, data);
       }
       fetchOrders();
       setIsModalOpen(false);
@@ -168,11 +168,6 @@ const OrdersSupplier = () => {
             <th className="border p-2">التاريخ</th>
             <th className="border p-2">الكمية</th>
             <th className="border p-2">سعر الوحدة</th>
-            <th className="border p-2">التكلفة</th>
-            <th className="border p-2">تكاليف النقل</th>
-            <th className="border p-2">تكاليف العمالة</th>
-            <th className="border p-2">تكاليف الصيانة</th>
-            <th className="border p-2">لتكاليف التشغيلية</th>
             <th className="border p-2">المجموع</th>
             <th className="border p-2">الحالة</th>
             <th className="border p-2">حالة الدفع</th>
@@ -189,13 +184,15 @@ const OrdersSupplier = () => {
               <td className="border p-2">{order.quantity}</td>
               <td className="border p-2">جنيه{order.unitPrice}</td>
               <td className="border p-2">
-                جنيه{order.transportationCost || 0}
+                {" "}
+                جنيه
+                {(
+                  order.quantity * order.unitPrice +
+                  (order.transportationCost || 0) +
+                  (order.laborCost || 0) +
+                  (order.operationalCost || 0)
+                ).toFixed(2)}
               </td>
-              <td className="border p-2">جنيه{order.totalCost}</td>
-              <td className="border p-2">جنيه{order.transportationCost}</td>
-              <td className="border p-2">جنيه{order.laborCost}</td>
-              <td className="border p-2">جنيه{order.maintenanceCost}</td>
-              <td className="border p-2">جنيه{order.totalCost}</td>
               <td className="border p-2">{order.status}</td>
               <td className="border p-2">{order.paymentStatus}</td>
               <td className="border p-2">

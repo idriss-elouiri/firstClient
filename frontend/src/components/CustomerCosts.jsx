@@ -1,24 +1,20 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
-const OrdersSupplierTk = () => {
-  const [ordersSupplier, setOrdersSupplier] = useState([]);
-  const [suppliers, setSuppliers] = useState([]);
+const CustomerCosts = () => {
+  const [customerCosts, setCustomerCosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("All");
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const [currentPage, setCurrentPage] = useState(1); // الصفحة الحالية
   const itemsPerPage = 10; // عدد الطلبات في كل صفحة
 
-  const fetchOrders = useCallback(async () => {
+  const fetchCustomerCosts = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        `${apiUrl}/api/ordersSupplier/getOrders`
-      );
-      setOrdersSupplier(data.ordersSupplier || []);
+      const { data } = await axios.get(`${apiUrl}/api/orders/getOrders`);
+      setCustomerCosts(data.orders || []);
     } catch (err) {
       setError("فشل في جلب البيانات.");
     } finally {
@@ -26,37 +22,16 @@ const OrdersSupplierTk = () => {
     }
   }, [apiUrl]);
 
-  const fetchSuppliers = useCallback(async () => {
-    try {
-      const { data } = await axios.get(`${apiUrl}/api/suppliers/getSuppliers`);
-      setSuppliers(data.suppliers || []);
-    } catch {
-      setError("فشل في جلب الموردين.");
-    }
-  }, [apiUrl]);
-
   useEffect(() => {
-    fetchOrders();
-    fetchSuppliers();
-    fetchCustomers();
-  }, [fetchOrders, fetchSuppliers]);
-
-  // تصفية الطلبات بناءً على الفلتر الحالي
-  const filteredOrdersSupplier = ordersSupplier.filter((order) => {
-    const statusMatches =
-      statusFilter === "All" || order.status === statusFilter;
-    return statusMatches;
-  });
+    fetchCustomerCosts();
+  }, [fetchCustomerCosts]);
 
   // منطق التصفح
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentOrders = filteredOrdersSupplier.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentOrders = customerCosts.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(filteredOrdersSupplier.length / itemsPerPage);
+  const totalPages = Math.ceil(customerCosts.length / itemsPerPage);
 
   if (loading) return <p>جاري التحميل...</p>;
 
@@ -71,20 +46,18 @@ const OrdersSupplierTk = () => {
             <th className="border p-2">التاريخ</th>
             <th className="border p-2">تكاليف النقل</th>
             <th className="border p-2">تكاليف العمالة</th>
-            <th className="border p-2">تكاليف الصيانة</th>
             <th className="border p-2">لتكاليف التشغيلية</th>
           </tr>
         </thead>
         <tbody>
           {currentOrders?.map((order) => (
             <tr key={order._id} className="text-center">
-              <td className="border p-2">{order.farm?.name}</td>
+              <td className="border p-2">{order.destination?.name}</td>
               <td className="border p-2">
                 {new Date(order.date).toLocaleDateString()}
               </td>
               <td className="border p-2">جنيه{order.transportationCost}</td>
               <td className="border p-2">جنيه{order.laborCost}</td>
-              <td className="border p-2">جنيه{order.maintenanceCost}</td>
               <td className="border p-2">جنيه{order.operationalCost}</td>
             </tr>
           ))}
@@ -120,4 +93,4 @@ const OrdersSupplierTk = () => {
   );
 };
 
-export default OrdersSupplierTk;
+export default CustomerCosts;

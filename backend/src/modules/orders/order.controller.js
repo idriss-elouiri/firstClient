@@ -15,8 +15,10 @@ export const createOrder = async (req, res, next) => {
   }
 
   // تحديث الكمية
-  stock.quantityDistributed += req.body.quantity;
-  stock.quantityAvailable -= req.body.quantity;
+  stock.quantityDistributed =
+    Number(stock.quantityDistributed) + Number(req.body.quantity);
+  stock.quantityAvailable =
+    Number(stock.quantityAvailable) - Number(req.body.quantity);
 
   await stock.save();
 
@@ -85,29 +87,80 @@ export const getOrders = async (req, res, next) => {
 // Handler for deleting an order
 export const deleteOrder = async (req, res, next) => {
   try {
-    const deletedOrder = await Order.findByIdAndDelete(req.params.orderId);
-    if (!deletedOrder) {
-      return next(errorHandler(404, "Order not found")); // Error if the order doesn't exist
+    // البحث عن الطلب الذي سيتم حذفه
+    const order = await Order.findById(req.params.orderId);
+    if (!order) {
+      return res.status(404).send("الطلب غير موجود");
     }
-    res.status(200).json({ message: "The order has been deleted" });
+
+    // البحث عن المخزون المرتبط بالمصدر
+    const stock = await Stock.findOne({ farm: order.source });
+    if (!stock) {
+      return res.status(404).send("المخزون المرتبط غير موجود");
+    }
+
+    // تحديث الكميات في المخزون
+
+    stock.quantityDistributed =
+      Number(stock.quantityDistributed) - Number(order.quantity);
+    stock.quantityAvailable =
+      Number(stock.quantityAvailable) + Number(order.quantity);
+
+    await stock.save(); // حفظ التغييرات في المخزون
+
+    // حذف الطلب
+    await Order.findByIdAndDelete(req.params.orderId);
+
+    res.status(200).json({ message: "تم حذف الطلب وتحديث المخزون" });
   } catch (error) {
-    next(error);
+    next(error); // تمرير الخطأ إلى معالج الأخطاء
   }
 };
 
 export const updateOrder = async (req, res, next) => {
   try {
-    const updateOrder = await Order.findByIdAndUpdate(
+    // البحث عن الطلب الذي سيتم تحديثه
+    const order = await Order.findById(req.params.orderId);
+    if (!order) {
+      return res.status(404).send("الطلب غير موجود");
+    }
+
+    // البحث عن المخزون المرتبط بالمصدر
+    const stock = await Stock.findOne({ farm: order.source });
+    if (!stock) {
+      return res.status(404).send("المخزون المرتبط غير موجود");
+    }
+
+    // التحقق من الكمية الجديدة مقارنة بالكمية القديمة
+    const quantityDifference = req.body.quantity - order.quantity;
+
+    // إذا كانت الكمية الجديدة تتطلب توزيعًا إضافيًا، تحقق من الكمية المتاحة
+    if (
+      quantityDifference > 0 &&
+      quantityDifference > stock.quantityAvailable
+    ) {
+      return res.status(400).send("الكمية الجديدة تتجاوز الكمية المتاحة");
+    }
+
+    stock.quantityDistributed =
+      Number(stock.quantityDistributed) + Number(quantityDifference);
+    stock.quantityAvailable =
+      Number(stock.quantityAvailable) - Number(quantityDifference);
+
+    await stock.save(); // حفظ التغييرات في المخزون
+
+    // تحديث الطلب
+    const updatedOrder = await Order.findByIdAndUpdate(
       req.params.orderId,
-      { $set: { ...req.body } }, // Use spread operator for flexibility
+      { $set: { ...req.body } }, // تحديث الطلب بالقيم الجديدة
       { new: true, runValidators: true }
     );
-    if (!updateOrder) {
-      return next(errorHandler(404, "Order not found")); // Error if the order doesn't exist
-    }
-    res.status(200).json({ message: "The order has been updated" });
+
+    res
+      .status(200)
+      .json({ message: "تم تحديث الطلب وتحديث المخزون", updatedOrder });
   } catch (error) {
-    next(error);
+    next(error); // تمرير الخطأ إلى معالج الأخطاء
   }
 };
 

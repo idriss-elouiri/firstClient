@@ -1,5 +1,3 @@
-import Order from "../orders/order.models.js";
-import OrderSupplier from "../ordersSupplier/orderSupplier.models.js";
 import Stock from "./stock.models.js";
 
 // Handler for creating a new order
@@ -74,5 +72,3 @@ export const updateStock = async (req, res, next) => {
     next(error); // تمرير الخطأ إلى معالج الأخطاء
   }
 };
-
-

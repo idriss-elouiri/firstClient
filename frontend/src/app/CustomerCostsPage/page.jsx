@@ -1,12 +1,13 @@
 "use client";
 
+import CustomerCosts from "@/components/CustomerCosts";
 import Layout from "@/components/Layout";
-import OrdersTk from "@/components/orderTk";
 import React from "react";
-export default function ordertkPage() {
+
+export default function CustomerCostsPage() {
   return (
     <Layout>
-      <OrdersTk />
+      <CustomerCosts />
     </Layout>
   );
 }
