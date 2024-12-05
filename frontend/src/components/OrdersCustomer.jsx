@@ -130,7 +130,7 @@ const OrdersCustomer = () => {
       if (editData) {
         await axios.put(`${apiUrl}/api/orders/update/${editData._id}`, data);
       } else {
-        await axios.post("http://localhost:5000/api/orders/create", data);
+        await axios.post(`${apiUrl}/api/orders/create`, data);
       }
       fetchOrders();
       setIsModalOpen(false);
