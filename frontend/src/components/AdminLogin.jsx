@@ -11,7 +11,7 @@ import {
 } from "../../src/redux/user/userSlice";
 
 export default function AdminLoginComp() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ email: "admin@gmail.com", password: "admin123" });
   const { loading, error: errorMessage } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const router = useRouter();
